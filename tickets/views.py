@@ -190,7 +190,8 @@ def member_data(request):
         if newphone:
             member.phone = newphone                    
             member.save()
-        send_mail("票點影城【會員資料修改通知信】",f"親愛的會員 您好:\n於{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} 透過會員資料修改服務更新了您的會員資料",
+        send_mail("票點影城【會員資料修改通知信】", f"親愛的會員 您好:\n於{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 透過會員資料修改服務更新了您的會員資料",
+
                   "fcaibi@gmail.com",[user.email],fail_silently=False)
         return JsonResponse({"status":"success","message":"會員資料更新成功!"})
           
