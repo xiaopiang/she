@@ -214,7 +214,7 @@ def change_password(request):
             user.set_password(password)                 
             user.save()  
             login(request,user)       
-            send_mail("票點影城【變更密碼確認信】",f"親愛的會員 您好:\n於{datetime.now().strftime("%Y-%m-%d %H:%M:%S")} 透過密碼修改服務已成功變更",
+            send_mail("票點影城【變更密碼確認信】",f"親愛的會員 您好:\n於{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 透過密碼修改服務已成功變更",
                         "@gmail.com",[user.email],fail_silently=False)                          
             return JsonResponse({"status":"success","message":"密碼已成功變更"})  
     return render(request,"tickets/change_password.html")
