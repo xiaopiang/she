@@ -190,9 +190,12 @@ def member_data(request):
         if newphone:
             member.phone = newphone                    
             member.save()
-        send_mail("票點影城【會員資料修改通知信】", f"親愛的會員 您好:\n於{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 透過會員資料修改服務更新了您的會員資料",
-
-                  "fcaibi@gmail.com",[user.email],fail_silently=False)
+       send_mail(
+    "票點影城【會員資料修改通知信】",
+    f"親愛的會員 您好:\n於{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 透過會員資料修改服務更新了您的會員資料",
+    "cat073117@gmail.com",  # ✅ 寄件人 email 字串
+    [user.email],
+    fail_silently=False
         return JsonResponse({"status":"success","message":"會員資料更新成功!"})
           
     return render(request,"tickets/member_data.html",locals())
@@ -214,8 +217,13 @@ def change_password(request):
             user.set_password(password)                 
             user.save()  
             login(request,user)       
-            send_mail("票點影城【變更密碼確認信】",f"親愛的會員 您好:\n於{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 透過密碼修改服務已成功變更",
-                        "@gmail.com",[user.email],fail_silently=False)                          
+            send_mail(
+                "票點影城【變更密碼確認信】",
+                f"親愛的會員 您好:\n於{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} 透過密碼修改服務已成功變更",
+                "cat073117@gmail.com",  # ✅ 正確寄件人 email 字串
+                [user.email],
+                fail_silently=False
+            )                        
             return JsonResponse({"status":"success","message":"密碼已成功變更"})  
     return render(request,"tickets/change_password.html")
 
