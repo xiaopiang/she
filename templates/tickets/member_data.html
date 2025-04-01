@@ -1,0 +1,224 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}會員資料{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">    
+	  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>                     
+</head>
+<body>
+    <!-- 導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="/tickets">電影購票系統</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tickets:login'%}">訂票查詢</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tickets/openInfo/">正在上映</a>  
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/">後台管理</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'tickets:member_index' %}">首頁</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'tickets:my_orders' %}">訂單查詢</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              會員專區
+                          </a>
+                          <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'tickets:member_data'%}">會員資料</a></li>
+                            <li><a class="dropdown-item border-0" href="{% url 'tickets:change_password'%}">修改密碼</a></li>
+                          </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:logout' %}">登出</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:login' %}">登入</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:register' %}">註冊</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <section id="personaldata">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="personaldata-form shadow-lg p-5 rounded">
+              <h3 class="text-dark text-left mb-4 ms-2 " >會員資訊</h3>
+              <form >
+                {% csrf_token %}
+                <div class="container">  
+                <div class="col-8">
+                  <div class="form-group row mb-4">
+                    <label for="username" class="col-md-3 text-dark" style="font-size:20px;">使用者名稱</label>
+                    <div class="col-md-9">
+                      <span type="text" class="text-dark" id="username" name="username" style="font-size:20px;">{{user.username}}</span>
+                    </div>
+                  </div>
+                  
+                  
+                  <div class="form-group row mb-4">
+                    <label for="memberaccount" class="col-md-3 text-dark" style="font-size:20px;">會員帳號</label>
+                    <div class="col-md-9">
+                      <span type="text" class="text-dark" id="memberaccount" name="memberaccount" style="font-size:20px;">{{user.email}}</span>
+                    </div>
+                  </div>
+                  
+                  
+                  <div class="form-group row mb-4">
+                    <label for="memberid" class="col-md-3 text-dark " style="font-size:20px;">身分證號</label>
+                    <div class="col-md-9">
+                      <span type="text" class="text-dark" id="memberid" name="memberid" style="font-size:20px;">{{member.idNumber}}</span>                  
+                    </div>  
+                  </div>
+                  
+                  <div class="form-group row mb-4">
+                    <label for="memberbirth" class="col-md-3 text-dark " style="font-size:20px;">出生日期</label>
+                    <div class="col-md-9">
+                      <span type="text" class="text-dark" id="memberbirth" name="memberbirth" style="font-size:20px;">{{member.birth}}</span>                  
+                    </div>
+                  </div>
+                  
+                  <div class="form-group row mb-3">
+                    <label for="memberphone" class="col-md-3 text-dark " style="font-size:20px;">手機號碼</label>
+                    <div class="col-md-9">
+                      <span type="text" class="text-dark" id="memberphone" name="memberphone" style="font-size:20px;">{{member.phone}}</span>                   
+                    </div>
+                  </div>  
+                </div>
+                </div>
+              </form>
+             </div>
+           </div>
+         </div>
+      </div>
+  </section>  
+                  
+  <section id="changepersonaldata">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-12">
+            <div class="changepersonaldata-form shadow-lg p-5 rounded">
+              <h3 class="text-dark text-left mb-4 ms-2" >修改會員資訊</h3>
+                <div class="container">  
+                <div class="col-8">
+                  <div class="form-group row mb-4">
+                    <label for="memberaccount" class="col-md-3 text-dark" style="font-size:20px;">使用者名稱</label>
+                    <div class="col-md-9">
+                      <input type="text" class="form-control"  style="font-size:20px;border:2px solid black" id="newname" name="newname" >
+                    </div>
+                  </div>                  
+                  <div class="form-group row mb-4">     
+                    <label for="newphone" class="col-md-3 text-dark" style="font-size:20px;">手機號碼</label>
+                    <div class="col-md-9">
+                      <input type="text" class="form-control"  style="font-size:20px;border:2px solid black" id="newphone" name="newphone" maxlength="10" 
+                     pattern="[0]{1}[9]{1}[0-9]{8}">
+                    </div>
+                  </div>                        
+                  <div class="form-group row mb-4">
+                    <label for="orignal_mail" class="col-md-3 text-dark" style="font-size:20px;">原始帳號</label>
+                    <div class="col-md-9">
+                      <input type="email" class="form-control"  style="font-size:20px;border:2px solid black" id="orignal_mail" name="orignal_mail" >
+                    </div>
+                  </div>  
+                  <div class="form-group row mb-4">     
+                    <label for="new_mail" class="col-md-3 text-dark" style="font-size:20px;">新帳號</label>
+                    <div class="col-md-9">
+                      <input type="email" class="form-control"  style="font-size:20px;border:2px solid black" id="new_mail" name="new_mail" pattern="\w+@gmail\.com$">
+                    </div>
+                  </div>                
+                </div>
+                </div>                                              
+                <div class="d-flex gap-5">
+                  <button  type="button" id="cancel-btn" data-mdb-button-init
+                     class="btn btn-secondary mt-4 btn-block gradient-custom-4 text-body" style="width:120px ; height:50px ;font-size:20px">取消更新</button>
+                  <button  type="button" id="update-btn" data-mdb-button-init			
+                     class="btn btn-primary mt-4 btn-block gradient-custom-4 text-body" style="width:150px ; height:50px ;font-size:20px">更新會員資料</button>
+                </div>
+                
+                <script>
+                  
+                  $(document).ready(function () {
+                    
+                    $("#cancel-btn").click(function(){          //按下'取消更新'按鈕後導向會員首頁
+                    window.location.href = "{% url 'tickets:member_index' %}";
+                    });
+                                                                
+                    $("#update-btn").click(function(){          //按下'更新會員資料'按鈕時送出 AJAX 請求                  
+                      let newname = $("#newname").val();        //獲取使用者輸入的值
+                      let newphone = $("#newphone").val();
+                      let orignal_mail = $("#orignal_mail").val();
+                      let new_mail = $("#new_mail").val();
+                      
+                      let phoneValid = $("#newphone")[0].checkValidity();    // 檢查手機號碼格式
+                      let emailValid = $("#new_mail")[0].checkValidity();    // 檢查電子信箱格式
+
+                      if (!phoneValid){
+                        alert("請輸入正確的手機號碼格式!");
+                        return;
+                      }
+
+                      if (!emailValid){
+                        alert("請輸入正確的電子信箱格式!");
+                        return;
+                      }
+
+                      $.ajax({
+                        url:"{% url 'tickets:member_data' %}",
+                        type: "POST",
+                        data: {
+                          "newname":newname,
+                          "newphone":newphone,   
+                          "orignal_mail":orignal_mail,
+                          "new_mail":new_mail,                          
+                          "csrfmiddlewaretoken":
+                         "{{ csrf_token }}"
+                        },
+                        success: function(response) {
+                          if (response.status==="success") {
+                            alert(response.message);
+                            location.reload();
+                          } else {
+                            alert(response.message);
+                          }
+                        },
+                        error: function () {
+                          alert("發生錯誤，請稍後再試。");
+                        }
+                      });
+                    });
+                  });          
+               
+                </script>        
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

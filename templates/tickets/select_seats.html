@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>選擇座位</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/seat.css">
+</head>
+<style>  /* 螢幕樣式 */
+    /* 螢幕樣式 */
+    .screen {
+        background: linear-gradient(to bottom, #555, #ccc);
+        height: 25px;
+        border-radius: 50%/100% 100% 0 0;
+        width: 80%;
+        margin: 0 auto 40px;
+        position: relative;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .screen:after {
+        content: "螢幕";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: #fff;
+        font-weight: bold;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+
+        /* Seat Container */
+        .seat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            perspective: 1000px;
+        }
+    
+        .seat-layout {
+            transform: rotateX(10deg);
+            transform-origin: top;
+        }
+        
+        table {
+            border-collapse: collapse; /* 合併邊框 */
+        }
+        
+        td {
+            border: none; /* 移除單元格邊框 */
+        }      
+
+        /* Table styling for seat layout */
+        table.seat-table {
+            margin: 0 auto;
+            border-collapse: separate;
+            border-spacing: 5px;
+        }
+    
+        /* Seat Styling */
+        td p {
+            margin: 0;
+            text-align: center;
+        }
+    
+        td {
+            position: relative;
+            text-align: center;
+        }
+    
+        td img {
+            display: block;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+    
+        td img:hover {
+            transform: scale(1.1);
+        }
+    
+        /* Row label styling */
+        td.row-label {
+            font-weight: bold;
+            width: 30px;
+            color: #555;
+            vertical-align: middle;
+        }
+    
+        /* Status-based styling */
+        img[src="../img/standard_available.png"] {
+            cursor: pointer;
+        }
+    
+        img[src="../img/standard_selected.png"] {
+            cursor: pointer;
+        }
+    
+        img[src="../img/standard_unavailable.png"] {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+    
+        /* Timer Styling */
+        .timer {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #d32f2f;
+        }
+    
+        .timer.warning {
+            animation: pulse 1s infinite;
+        }
+    
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
+        }
+    
+        /* Legend Styling */
+        .seat-legend {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+    
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 15px 10px;
+        }
+    
+        .legend-box {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+    
+        /* Summary Card */
+        .summary-card {
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            border: none;
+        }
+    
+        .summary-card.has-selections {
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+    
+        #selected-seats {
+            min-height: 30px;
+            margin-top: 5px;
+            border: none;
+        }
+    
+        .badge.bg-primary {
+            background-color: #2196F3 !important;
+            padding: 6px 10px;
+            margin-bottom: 5px;
+        }
+    
+        /* Buttons */
+        .btn-success {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+            transition: all 0.2s;
+        }
+    
+        .btn-success:hover:not([disabled]) {
+            background-color: #388E3C;
+            border-color: #388E3C;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+    
+        .btn-success:disabled {
+            background-color: #A5D6A7;
+            border-color: #A5D6A7;
+            cursor: not-allowed;
+        }
+    
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            table.seat-table td {
+                padding: 2px;
+            }
+            
+            table.seat-table td p {
+                font-size: 0.8rem;
+            }
+            
+            table.seat-table td img {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .summary-card .row {
+                flex-direction: column;
+            }
+            
+            .summary-card .col-md-4 {
+                width: 100%;
+                text-align: center !important;
+                margin-bottom: 15px;
+            }
+        }
+    
+        /* Add seat labels */
+        .row-label {
+            font-weight: bold;
+            padding-right: 10px;
+        }
+        .position-sticky {
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            z-index: 10;
+          }
+        .container, .row {
+            overflow: visible !important;
+        }
+    
+</style>   
+<body>
+    <section class="main-container">
+        <div class="container">
+            <form action="/LiveTicket/Home/SelectSeats" method="post" autocomplete="off">
+              <div class="row">
+                <!-- 左側主內容區 -->
+                <div class="col-lg-8">
+                  <div class="panel">
+                    <div class="panel-body">
+                      <div class="row">
+                        <div class="col-md-2 col-sm-3 col-xs-3">
+                          <div class="abordered-class text-center">
+                            <div class="c-bg"><h4>12+</h4></div>
+                            <div><h5>輔12級</h5></div>
+                          </div>
+                        </div>
+                        <div class="col-sm-9 col-lg-7 col-md-6 col-xs-9">
+                          <h3><strong>{{ showtime.movie.title }}</strong></h3>
+                          <p>{{ showtime.movie.title }}</p>
+                        </div>
+                        <div class="col-sm-12 col-lg-3 col-md-4 col-xs-12">
+                          <div class="body">
+                            <p class="text-primary"><i class="fa fa-clock-o pr-10"></i> {{ showtime.start_time|date:"Y/m/d（D） H:i" }}</p>
+                            <p class="text-primary"><i class="fa fa-location-arrow pr-10"></i> {{ showtime.theater.name }}</p>
+                            <p class="text-primary"><i class="fa fa-video-camera pr-10"></i> 第A區</p>
+                          </div>
+                        </div>
+                      </div> <!-- 結束 row -->
+                    </div> <!-- 結束 panel-body -->
+                  </div> <!-- 結束 panel -->
+                </div> <!-- 結束 col-lg-8 -->
+          
+                <!-- 右側側邊欄（會員+購物清單） -->
+                <div class="col-lg-4">
+                  <div class="position-sticky" style="top: 20px; z-index: 10;">
+                    <!-- 會員專區 -->
+                    <div class="panel mb-3">
+                      <div class="panel-heading">
+                        <h4 class="panel-title"><i class="fa fa-user me-2"></i> 會員專區</h4>
+                      </div>
+                      <div class="panel-body">
+                        <p>尚未登入</p>
+                        <p class="text-primary"><i class="fa fa-info-circle me-1"></i> <strong>請立即登入會員</strong></p>
+                        <p>儲值金消費享會員票價及餐飲優惠</p>
+                        <a href="{% url 'tickets:login' %}?next={{ request.get_full_path }}" class="btn btn-primary btn-member-login w-100 mt-2">
+                            <i class="fa fa-sign-in-alt me-2"></i> 會員登入
+                          </a>
+                      </div>
+                    </div>
+          
+                    <!-- 購物清單 -->
+                    <div class="panel">
+                      <div class="panel-heading">
+                        <h4 class="panel-title"><i class="fa fa-shopping-cart me-2"></i> 購物清單</h4>
+                      </div>
+                      <div class="panel-body">
+                        <table class="table" id="OrderInfo">
+                          <thead>
+                            <tr>
+                              <th>商品名稱</th>
+                              <th>數量</th>
+                              <th>價格</th>
+                            </tr>
+                          </thead>
+                          <tbody id="cartItems">
+                            <!-- 購物清單項目將動態插入這裡 -->
+                          </tbody>
+                          <tfoot>
+                            <tr>
+                              <td colspan="2" class="text-end">合計</td>
+                              <td><span id="spTotalPrice" class="fw-bold">0</span></td>
+                            </tr>
+                          </tfoot>
+                        </table>
+                        
+                      </div>
+                    </div>
+                  </div> <!-- 結束 sticky 區塊 -->
+                </div> <!-- 結束 col-lg-4 -->
+              </div> <!-- 結束 row -->
+            </form>
+          </div> <!-- 結束 container -->
+          
+    </section>
+
+
+<div class="mb-4">
+    <h1 class="text-center">選擇座位</h1>
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5 class="mb-1">{{ showtime.movie.title }}</h5>
+                    <p class="mb-0"><i class="bi bi-building"></i> {{ showtime.theater.name }} - {{ showtime.start_time|date:"Y年m月d日 H:i" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="seat-legend">
+    <div class="legend-item">
+        <div class="legend-box" style="background-color:rgb(238, 10, 10); border: 1px solid #ccc;"></div>
+        <span>已售出</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-box" style="background-color: #e0e0e0; border: 1px solid #ccc;"></div>
+        <span>可選擇</span>
+    </div>
+    <div class="legend-item">
+        <div class="legend-box" style="background-color:rgb(68, 133, 202); border: 1px solid #1976D2;"></div>
+        <span>已選擇</span>
+    </div>
+</div>
+
+<div class="text-center mb-4">
+    <div class="screen"></div>
+</div>
+<div id="showtime-id" data-showtime-id="{{ showtime.id }}"></div>
+<table class="seat-table">
+    <tbody>
+        {% for row, seats in seat_rows %}
+        <tr>
+            <td class="row-label">{{ row }}</td>
+            {% for seat in seats %}
+            <td class="seat-cell" {% if seat.status == 'sold' %}bg-danger{% endif %}"
+                data-seat-id="{{ seat.id }}"
+                data-status="{{ seat.status }}">
+                <input type="checkbox"
+                       class="seat-checkbox"
+                       {% if seat.status == 'sold' %}disabled{% endif %}
+                       {% if seat.status == 'selected' %}checked{% endif %}>
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+<div class="card mb-4 summary-card {% if user_reserved_seats %}has-selections{% endif %}">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-4">
+                <h5><i class="bi bi-check-circle-fill text-primary"></i> 選擇座位: <span id="selected-count">{{ user_reserved_seats|length }}</span></h5>
+                <h5>可選座位剩餘：<span id="available-count" data-total="{{ available_count }}">{{ available_count }}</span></h5>
+
+            </div>
+            <div class="col-md-4 text-center">
+                <div id="timer-container" class="timer">
+                    <i class="bi bi-clock"></i> 剩餘預訂時間: <span id="timer">15:00</span>
+                </div>
+            </div>
+            <div class="col-md-4 text-end">
+                <h5 class="mb-3">總價: NT$ <span id="total-price">{{total_price|default:0  }}</span></h5>
+                <button id="proceed-btn" class="btn btn-success btn-lg"
+            data-logged-in="{{ is_logged_in|yesno:'true,false' }}">
+            <i class="bi bi-cart-check"></i> 確認訂單
+</button>
+
+
+            </div>
+            
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        console.log("✅ 座位選擇 JS 載入完成");
+    
+        const seats = document.querySelectorAll(".seat-checkbox");
+        const showtimeIdElement = document.getElementById("showtime-id");
+    
+        if (!showtimeIdElement) {
+            console.error("找不到場次 ID 元素 (#showtime-id)，請檢查 HTML");
+            return;
+        }
+    
+        const showtimeId = showtimeIdElement.dataset.showtimeId;  // 取得場次 ID
+    
+        seats.forEach(seat => {
+            seat.addEventListener("change", function () {
+                // ✅ 如果被選中，先取消其他已選的
+                if (this.checked) {
+                    seats.forEach(other => {
+                        if (other !== this) {
+                            other.checked = false;
+                        }
+                    });
+                }
+        
+                // 以下原本的邏輯照舊
+                let seatCell = this.parentElement;
+                let seatId = seatCell.dataset.seatId;
+                let isSold = seatCell.dataset.status === "sold";
+        
+                if (!seatId) {
+                    console.error("缺少座位 ID，請檢查 HTML 結構");
+                    return;
+                }
+        
+                if (isSold) {
+                    console.warn("這個座位已售出，無法選擇");
+                    return;
+                }
+        
+                let isSelected = this.checked;
+        
+                fetch(`/tickets/api/select_seat/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRFToken": getCookie("csrftoken")
+                    },
+                    body: JSON.stringify({
+                        showtime_id: showtimeId,
+                        seat_id: seatId,
+                        action: isSelected ? "select" : "cancel"
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        alert("座位選擇失敗：" + data.message);
+                        this.checked = !this.checked;
+                    }
+                })
+                .catch(error => console.error("選擇座位時發生錯誤:", error));
+        
+                updateSelectedCount();
+                updateAvailableCount();
+            });
+        });
+    
+        // **獲取 CSRF Token (Django 必須)**
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== "") {
+                let cookies = document.cookie.split(";");
+                for (let i = 0; i < cookies.length; i++) {
+                    let cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + "=")) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    
+        // **讀取並更新總價**
+        console.log("🔹 嘗試讀取總價...");
+        const urlParams = new URLSearchParams(window.location.search);
+        let totalPrice = urlParams.get("total_price") || 0;
+    
+        // 確保轉換成數字格式
+        totalPrice = parseInt(totalPrice);
+        if (isNaN(totalPrice)) {
+            totalPrice = 0;
+        }
+    
+        // 更新總價到 HTML
+        const totalPriceElement = document.getElementById("spTotalPrice");
+        if (totalPriceElement) {
+            totalPriceElement.textContent = totalPrice.toLocaleString();
+            console.log("✅ 總價已成功讀取並更新：", totalPrice);
+        } else {
+            console.error("❌ 找不到 `#spTotalPrice` 元素，請檢查 HTML");
+        }
+    });
+    function updateSelectedCount() {
+        const checkedBoxes = document.querySelectorAll(".seat-checkbox:checked");
+        document.getElementById("selected-count").textContent = checkedBoxes.length;
+    }
+    function updateAvailableCount() {
+        const totalAvailable = parseInt(document.getElementById("available-count").dataset.total);
+        const selectedCount = document.querySelectorAll(".seat-checkbox:checked").length;
+        const remaining = totalAvailable - selectedCount;
+    
+        document.getElementById("available-count").textContent = remaining;
+    }
+    document.getElementById("proceed-btn").addEventListener("click", function () {
+        const isLoggedIn = this.dataset.loggedIn === "true";
+    
+        if (!isLoggedIn) {
+            alert("請先登入才能確認訂單");
+            window.location.href = "/tickets/login/?next=" + window.location.pathname + window.location.search;
+            return;
+        }
+    
+            // 已登入，跳轉到付款頁面
+            const showtimeId = {{ showtime.id }};
+            const totalPrice = {{ total_price|default:0 }};
+            
+            // 這裡使用付款頁面，並將訂單總價參數傳遞過去
+            window.location.href = `/tickets/payment/${showtimeId}/?total_price=${totalPrice}`;
+    });
+</script>
+
+</body>

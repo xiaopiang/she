@@ -1,0 +1,259 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}會員登入{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">    
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
+</head>
+<body>
+    <!-- 導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="/tickets">電影購票系統</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tickets:login'%}">訂票查詢</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tickets/openInfo/">正在上映</a>  
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/">後台管理</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'tickets:member_index' %}">首頁</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'tickets:my_orders' %}">訂單查詢</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                              會員專區
+                          </a>
+                          <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url 'tickets:member_data'%}">會員資料</a></li>
+                            <li><a class="dropdown-item border-0" href="{% url 'tickets:change_password'%}">修改密碼</a></li>
+                          </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:logout' %}">登出</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:login' %}">登入</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:register' %}">註冊</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="p-2 rounded">              
+                {% csrf_token %}    
+                <div class="welcome-banner">            
+                    <h4 >{{user.username}} 您好!</h3>                         
+                    <h3>歡迎使用本系統!</h2> 
+                    <h3 >選擇電影、輕鬆訂票，享受無縫觀影體驗!</h3>                                                                             
+                </div>                       
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 快速訂票系統 -->
+    <section class="indexSearch">
+        <div class="searchArea">
+            <ul class="searchTab">
+                <li id="tab1" class="select">快速訂票</li>
+            </ul>
+            <div class="searchContent">
+                <section id="searchBox1" style="display: block;" class="searchGroup">
+                    <form class="bookGroup">
+                        <ul>
+                            <!-- 影城選擇 -->
+                            <li>
+                                <span class="icon-marker"></span>
+                                <select name="cinema" id="cinema-select" class="validate[required]">
+                                    <option value="">請選擇影城</option>
+                                </select>
+                            </li>
+                            <!-- 電影選擇 -->
+                            <li>
+                                <span class="icon-video-1"></span>
+                                <select name="movie" id="movie-select" class="validate[required]">
+                                    <option value="">請選擇電影</option>
+                                </select>
+                            </li>
+                            <!-- 日期選擇 -->
+                            <li>
+                                <span class="icon-calendar"></span>
+                                <select name="date" id="date-select" class="validate[required]">
+                                    <option value="">請選擇日期</option>
+                                </select>
+                            </li>
+                            <!-- 場次選擇 -->
+                            <li>
+                                <span class="icon-schedule"></span>
+                                <select name="session" id="session-select" class="validate[required]">
+                                    <option value="">請選擇場次</option>
+                                </select>
+                            </li>
+                        </ul>
+                        <!-- 訂票按鈕 -->
+                        <section class="btnArea">
+                            <button type="button" id="book-button" disabled>前往訂票</button>
+                        </section>
+                    </form>
+                </section>
+            </div>
+        </div>
+    </section>
+
+    <!-- 主要內容區塊 -->
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <!-- 頁腳 -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>在線選擇您喜愛的電影、場次和座位</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2025 票點影城 SPOTIXSHOW Cinemas. All Rights Reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 動態載入影城、電影、日期、場次 -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const cinemaSelect = document.getElementById("cinema-select");
+            const movieSelect = document.getElementById("movie-select");
+            const dateSelect = document.getElementById("date-select");
+            const sessionSelect = document.getElementById("session-select");
+            const bookButton = document.getElementById("book-button");
+
+            // **動態載入影城**
+            fetch("/tickets/api/theaters/")
+                .then(response => response.json())
+                .then(data => {
+                    cinemaSelect.innerHTML = `<option value="">請選擇影城</option>`;
+                    data.theaters.forEach(theater => {
+                        cinemaSelect.innerHTML += `<option value="${theater.id}">${theater.name}</option>`;
+                    });
+                })
+                .catch(error => console.error("載入影城失敗：", error));
+
+            // **影城變更時，載入電影**
+            cinemaSelect.addEventListener("change", function() {
+                const theaterId = this.value;
+                if (!theaterId) return;
+
+                fetch(`/tickets/api/movies/${theaterId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        movieSelect.innerHTML = `<option value="">請選擇電影</option>`;
+                        data.movies.forEach(movie => {
+                            movieSelect.innerHTML += `<option value="${movie.id}">${movie.title}</option>`;
+                        });
+                    })
+                    .catch(error => console.error("載入電影失敗：", error));
+            });
+
+            // **電影變更時，載入可選日期**
+            movieSelect.addEventListener("change", function() {
+                const movieId = this.value;
+                if (!movieId) return;
+
+                fetch(`/tickets/api/dates/${movieId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        dateSelect.innerHTML = `<option value="">請選擇日期</option>`;
+                        data.dates.forEach(date => {
+                            dateSelect.innerHTML += `<option value="${date}">${date}</option>`;
+                        });
+                    })
+                    .catch(error => console.error("載入日期失敗：", error));
+            });
+
+            // **日期變更時，載入場次**
+            dateSelect.addEventListener("change", function() {
+                const movieId = movieSelect.value;
+                const theaterId = cinemaSelect.value;
+                const selectedDate = this.value;
+
+                if (!movieId || !selectedDate || !theaterId) return;
+
+                fetch(`/tickets/api/sessions/${theaterId}/${movieId}/${selectedDate}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        sessionSelect.innerHTML = `<option value="">請選擇場次</option>`;
+                        data.sessions.forEach(session => {
+                            sessionSelect.innerHTML += `<option value="${session.id}">${session.time}</option>`;
+                        });
+                    })
+                    .catch(error => console.error("載入場次失敗：", error));
+            });
+
+            // **訂票按鈕**
+            sessionSelect.addEventListener("change", function () {
+                bookButton.disabled = !sessionSelect.value;
+            });
+
+            bookButton.addEventListener("click", function () {
+                const showtimeId = sessionSelect.value;
+                if (!showtimeId) {
+                    alert("請選擇完整資訊！");
+                    return;
+                }
+                window.location.href = `/tickets/select_tickets/${showtimeId}/`;
+            });
+        });
+
+    </script>
+    <style>
+        .navbar .dropdown-item:hover{
+            background-color:#007bff;
+            color:white;
+        }        
+        .welcome-banner{
+            background-color:#d3d3d3!important;
+            padding:20px;
+            border:2px solid #007bff;
+            border-radius:10px;
+            text-align:center;
+            max-width:80%;
+            margin:20px auto;
+            box-shadow:0 4px 8px rgba(0,0,0,0.1);
+
+        }
+    </style>
+</body>
+</html>
+
+

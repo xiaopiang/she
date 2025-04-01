@@ -1,0 +1,201 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}訂單查詢{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>    
+</head>
+<body>
+    <!-- 導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="/tickets">電影購票系統</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tickets:login'%}">訂票查詢</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tickets/openInfo/">正在上映</a>  <!-- 修改為 openInfo -->
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/">後台管理</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'tickets:member_index' %}">首頁</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'tickets:my_orders' %}">訂單查詢</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                會員專區
+                            </a>
+                            <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
+                              <li><a class="dropdown-item" href="{% url 'tickets:member_data' %}">會員資料</a></li>
+                              <li><a class="dropdown-item border-0" href="{% url 'tickets:change_password' %}">修改密碼 Detail</a></li>
+                            </ul>
+                        </li>                                      
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:logout' %}">登出</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:login' %}">登入</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:register' %}">註冊</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+      <h1 class="mb-5">訂單查詢</h1>
+      <!--Tab 導航-->
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <a class="nav-link active order-record-btn" id="order-record-tab" data-bs-toggle="tab" href="#order-record" aria-selected="true">訂單記錄</a>
+        </li>
+        <li class="nav-item" role="presentation">
+          <a class="nav-link order-history-btn" id="order-history-tab" data-bs-toggle="tab" href="#order-history" aria-selected="false">歷史記錄</a>
+        </li>
+      </ul>
+      
+      <!--Tab 內容-->
+      <div class="tab-content mt-3" id="myTabContent">
+        <!--訂單記錄-->
+        <div class="tab-pane fade show active" id="order-record" role="tabpanel" aria-labelledby="order-record-tab">
+          <h3>訂單記錄內容</h3>
+          <table class="table table-bordered shadow-lg text-center table-striped table-hover">          
+            <thead>
+              <tr class="fs-8 bg-secondary" style="font-size:20px" >               
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">訂單編號</th>
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">電影名稱</th>                        
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">放映時間</th>
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">票種</th>
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">張數</th>
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">座位</th>
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">總金額</th>
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">付款狀態</th>                        
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">前往付款</th>
+                <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">訂單詳情</th>
+              </tr>            
+            </thead>
+              {% comment %} {% for order in orders %}   {% endcomment %}
+              <tbody style="font-size:18px">  <!--模擬數據-->
+                <td style="word-wrap:break-word;white-space:normal">{{orders.id}}</td>
+                <td style="word-wrap:break-word;white-space:normal">{{orders.showtime.movie.title}}</td>                       
+                <td style="word-wrap:break-word;white-space:normal">{{orders.showtime.start_time}}</td>
+                <td style="word-wrap:break-word;white-space:normal">單人套票</td> 
+                <td style="word-wrap:break-word;white-space:normal">1</td>
+                <td style="word-wrap:break-word;white-space:normal">A3</td>
+                <td style="word-wrap:break-word;white-space:normal">{{orders.total_price}}</td>
+              {% if orders.status == "paid" %}
+                <td style="word-wrap:break-word;white-space:normal">已付款</td> 
+              {% elif orders.status == "pending" %}
+                <td style="word-wrap:break-word;white-space:normal">待付款</td>                                                  
+              {% endif %}
+              <td style="word-wrap:break-word;white-space:normal">待付款</td>  <!--目前先使用-->
+              
+              {% comment %} 如果未付款才會顯示付款連結以及有訂單才會顯示訂單詳情 {% if order_id %} <!--模擬有訂單編號 1 改成 orders.id--> {% endcomment %}
+                <td><a href="{% url 'tickets:payment' order_id=1 %}" width="15%">點擊付款</td>                        
+                <td><a href="{% url 'tickets:order_detail' order_id=1 %}" width="15%">訂單詳情</td>
+              {% comment %} {% endif %}   {% endcomment %}
+              </tr>
+              </tbody>                              
+        </table>
+      </div>
+    
+      <!--訂單歷史記錄-->
+      <div class="tab-pane fade" id="order-history" role="tabpanel" aria-labelledby="order-history-tab">  
+        <h3>歷史記錄內容</h3>
+            <table class="table table-bordered shadow-lg text-center table-striped table-hover">            
+              <thead>
+                <tr class="fs-8 bg-secondary" style="font-size:20px" >                                   
+                  <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">訂單編號</th>
+                  <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">電影名稱</th>                        
+                  <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">放映時間</th>
+                  <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">票種</th>
+                  <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">張數</th>
+                  <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">座位</th>
+                  <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">總金額</th>
+                  <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">付款狀態</th>                                          
+                  <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">訂單詳情</th>
+                </tr>  
+              </thead>          
+                {% comment %} {% for order in orders %}   {% endcomment %}
+                <tbody style="font-size:18px">  <!--模擬數據-->
+                  <td style="word-wrap:break-word;white-space:normal">{{orders.id}}</td>
+                  <td style="word-wrap:break-word;white-space:normal">{{orders.showtime.movie.title}}</td>                       
+                  <td style="word-wrap:break-word;white-space:normal">{{orders.showtime.start_time}}</td>
+                  <td style="word-wrap:break-word;white-space:normal">單人套票</td> 
+                  <td style="word-wrap:break-word;white-space:normal">1</td>
+                  <td style="word-wrap:break-word;white-space:normal">A3</td>
+                  <td style="word-wrap:break-word;white-space:normal">{{orders.total_price}}</td>                
+                {% if orders.status == "cancelled" %}
+                  <td style="word-wrap:break-word;white-space:normal">已取消</td>                         
+                {% elif refund.status == "refund" %}
+                  <td style="word-wrap:break-word;white-space:normal">已退款</td>                                          
+                {% endif %}                                
+                <td style="word-wrap:break-word;white-space:normal">已取消</td> <!--目前先使用-->
+                {% comment %} {% if order_id %} <!--模擬有訂單編號 1 之後改成 orders.id--> {% endcomment %}                                        
+                  <td><a href="{% url 'tickets:order_detail' order_id=1 %}" width="15%">訂單詳情</td>
+                {% comment %} {% endif %}   {% endcomment %}
+                </tr>
+                </tbody>                                    
+          </table>          
+      </div>
+    </div>
+    <div class="d-flex justify-content-center gap-3" >
+      <button type="button" class="btn btn-secondary w-25 mt-3"  style="height:50px ;font-size:20px" onclick=window.location.href="{% url 'tickets:member_index' %}">返回</button>          
+    </div>
+    <style>
+      .navbar .dropdown-item:hover{
+          background-color:#007bff;          
+          color:white;
+          transition:all 0.3s ease;
+      }
+      .order-record-btn {
+        background-color:#28a745;
+        color:white;
+        transition:transform 0.2s ease,background-color 0.2s ease;
+        font-size:20px;
+        border-radius:0.25rem;
+        padding:10px 20px;
+        
+      }
+      .order-history-btn {
+        background-color:#e0a800;
+        color:white;  
+        transition:transform 0.2s ease,background-color 0.2s ease;
+        font-size:20px;
+        border-radius:0.25rem;
+        padding:10px 20px;
+      }
+      .order-record-btn:active{
+        transform:scale(0.8);
+      }
+      .order-history-btn:active{
+        transform:scale(0.8);
+      }
+      
+
+    </style>              
+  </div>
+</body>
+</html>

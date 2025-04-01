@@ -1,0 +1,95 @@
+.seat {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    margin: 5px;
+    text-align: center;
+    line-height: 30px;
+    border: 1px solid #000;
+    cursor: pointer;
+}
+
+.unavailable {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.user-reserved {
+    background-color: #ffcc00;
+}
+
+.available {
+    background-color: #4CAF50;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    text-align: center;
+    border: none;
+}
+
+td {
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #ccc;
+}
+
+td img {
+    width: 25px;
+    height: 25px;
+}
+
+td[data-type="Empty"] {
+    background-color: #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* td[data-type="Empty"]:hover {
+    background-color: #d3d3d3;
+}
+
+td[data-status="1"] {
+    background-color: #ff6666; /* 已選擇座位的顏色 
+}
+
+td[data-status="0"] {
+    background-color: #66ff66; /* 可選座位的顏色 
+} 
+*/
+
+tr {
+    line-height: 25px;
+}
+
+/* 面板樣式 */
+.panel {
+    margin-bottom: 20px;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.1);
+}
+
+.panel-heading {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(0,0,0,.125);
+    background-color: #007bff;
+    color: white;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.panel-title {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.panel-body {
+    padding: 15px;
+}

@@ -1,0 +1,326 @@
+/* Main container styling */
+.main-container {
+    padding: 40px 0;
+    background: #f8f9fa;
+}
+
+/* Panel styling */
+.panel {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.panel-primary {
+    border-color: #0d6efd;
+}
+
+.panel-primary > .panel-heading {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    color: #fff;
+    padding: 10px 15px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+}
+
+.panel-title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.panel-body {
+    padding: 15px;
+}
+
+/* Movie rating badges styling */
+.abordered-class {
+    margin-bottom: 10px;
+}
+
+.overlay-container {
+    color: white;
+    padding: 8px;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.a-bg {
+    background-color: #dc3545; /* 限制級 - Red */
+}
+
+.b-bg {
+    background-color: #fd7e14; /* 輔15級 - Orange */
+}
+
+.c-bg {
+    background-color: #ffc107; /* 輔12級 - Yellow */
+}
+
+.d-bg {
+    background-color: #28a745; /* 保護級 - Green */
+}
+
+.e-bg {
+    background-color: #0dcaf0; /* 普遍級 - Blue */
+}
+
+/* Dark translucent background for section headers */
+.dark-translucent-bg {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 20px 0;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+.dark-translucent-bg .title {
+    margin-top: 0;
+}
+
+/* Ticket type listing styling */
+.listing-item {
+    margin-bottom: 20px;
+}
+
+.overlay-container.data-table {
+    position: relative;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.overlay-container.data-table img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+.overlay-link {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.overlay-link:hover {
+    opacity: 1;
+}
+
+.overlay-link i {
+    color: white;
+    font-size: 24px;
+}
+
+.overlay-to-top {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px;
+    font-size: 12px;
+}
+
+/* Table styling */
+.table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 1rem;
+    border-collapse: collapse;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+    padding: 10px;
+    font-weight: 600;
+}
+
+.table tbody td {
+    vertical-align: middle;
+    padding: 10px;
+    border-top: 1px solid #dee2e6;
+}
+
+/* Form control styling */
+.form-control-s {
+    display: block;
+    width: 100%;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Button styling */
+.btn {
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    user-select: none;
+    border: 1px solid transparent;
+    padding: 0.375rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border-radius: 0.25rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    color: #fff;
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+.btn-lg {
+    padding: 0.5rem 1rem;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    border-radius: 0.3rem;
+}
+
+.btn-animated {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-animated i {
+    margin-left: 5px;
+    transition: transform 0.3s;
+}
+
+.btn-animated:hover i {
+    transform: translateX(5px);
+}
+
+.disabled {
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+/* Helper classes */
+.pr-10 {
+    padding-right: 10px;
+}
+
+.mb-20 {
+    margin-bottom: 20px;
+}
+
+.mt-10 {
+    margin-top: 10px;
+}
+
+.text-primary {
+    color: #0d6efd;
+}
+
+.text-info {
+    color: #0dcaf0;
+}
+
+.text-danger {
+    color: #dc3545;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 767px) {
+    .visible-xs {
+        display: block !important;
+    }
+    
+    .table-responsive {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (min-width: 768px) {
+    .visible-xs {
+        display: none !important;
+    }
+}
+
+/* Animation classes */
+.animated {
+    animation-duration: 1s;
+    animation-fill-mode: both;
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translate3d(20%, 0, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.fadeInRight {
+    animation-name: fadeInRight;
+}
+
+/* Sidebar styling */
+.sidebar {
+    margin-bottom: 30px;
+}
+
+/* Tooltip styling */
+[data-toggle="tooltip"] {
+    cursor: pointer;
+}
+
+/* Member area styling */
+#divMemberInfo .panel-body {
+    padding: 15px;
+}
+
+/* Shopping cart styling */
+#OrderInfo {
+    margin-bottom: 0;
+}
+
+/* Grid spacing */
+.grid-space-0 {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.grid-space-0 > div {
+    padding-left: 0;
+    padding-right: 0;
+    margin-bottom: 0;
+}

@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}訂單詳情{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+    <!-- 導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+          <a class="navbar-brand" href="/tickets">電影購票系統</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tickets:login'%}">訂票查詢</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/tickets/openInfo/">正在上映</a>  <!-- 修改為 openInfo -->
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        {% if user.is_staff %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/">後台管理</a>
+                        </li>
+                        {% endif %}
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'tickets:member_index' %}">首頁</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" href="{% url 'tickets:my_orders' %}">訂單查詢</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                會員專區
+                            </a>
+                            <ul class="dropdown-menu " aria-labelledby="navbarDropdown">
+                              <li><a class="dropdown-item" href="{% url 'tickets:member_data' %}">會員資料</a></li>
+                              <li><a class="dropdown-item border-0" href="{% url 'tickets:change_password' %}">修改密碼 Detail</a></li>
+                            </ul>
+                        </li>                                      
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:logout' %}">登出</a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:login' %}">登入</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'tickets:register' %}">註冊</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container mt-5">
+        <div class="row justify-content-center">          
+                <h1 class="mb-5">訂單詳情</h1>              
+                <div class="table-responsive">
+                  <table class="table table-bordered shadow-lg text-center table-striped table-hover">
+                    <thead>
+                      <tr class="fs-8 bg-secondary" style="font-size:20px" >                                           
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">訂單編號</th>
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">影城</th>
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">電影名稱</th>                        
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">放映時間</th>
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">總金額</th>                                              
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="12%">訂單成立時間</th>
+                      {% if refund %}
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">取消時間</th>  
+                      {% else %}
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">付款時間</th>                        
+                      {% endif %}
+                      
+                      {% if payment_type %}
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">付款方式</th>                                                                        
+                      {% endif %}                      
+                        <th scope="col" style="word-wrap:break-word;white-space:normal" width="10%">訂單狀態</th>                                    
+                      </tr>
+                
+                    <tbody style="font-size:18px">
+                      {% comment %} {% for order in orders %}   {% endcomment %}
+                      <tr class="table-light">  <!--模擬數據-->                                                
+                        <td style="word-wrap:break-word;white-space:normal">{{order.id}}</td>
+                        <td style="word-wrap:break-word;white-space:normal">{{order.showtime.theater.name}}</td>
+                        <td style="word-wrap:break-word;white-space:normal">{{order.showtime.movie.title}}</td>                       
+                        <td style="word-wrap:break-word;white-space:normal">{{order.showtime.start_time}}</td>
+                        <td style="word-wrap:break-word;white-space:normal">{{order.total_price}}</td>                        
+                        <td style="word-wrap:break-word;white-space:normal">{{order.payment_date}}</td>
+                      {% if orders.status == "paid" %} 
+                        <td style="word-wrap:break-word;white-space:normal">{{order.trade_date}}</td>    
+                      {% else %}
+                        <td style="word-wrap:break-word;white-space:normal">{{order.trade_date}}</td>    
+                      {% endif %}                     
+                      
+                      {% if payment_type %}
+                        <td style="word-wrap:break-word;white-space:normal">{{payment_type}}</td>
+                      {% endif %}            
+                      
+                      {% if orders.status == "paid" %}
+                        <td style="word-wrap:break-word;white-space:normal">已付款</td> 
+                      {% elif orders.status == "pending" %}
+                        <td style="word-wrap:break-word;white-space:normal">待付款</td> 
+                      {% elif orders.status == "cancelled" %}
+                        <td style="word-wrap:break-word;white-space:normal">已取消</td>   
+                      {% elif refund.status == "refund" %}
+                        <td style="word-wrap:break-word;white-space:normal">已退款</td>                                                     
+                      {% endif %}
+                        <td style="word-wrap:break-word;white-space:normal">待付款</td>  <!--目前先使用 之後要判斷-->                                                                    
+                      </tr>
+                    </tbody>                    
+                    </thead>
+                  </table>
+                  <div class="d-flex justify-content-center gap-3">
+                    <button type="button" class="btn btn-secondary w-25 mt-3" style="height:50px ;font-size:20px" onclick=window.location.href="{% url 'tickets:my_orders' %}">返回</button>  
+                    {% comment %} <button type="button" class="btn btn-primary w-75" onclick=window.location.href="{% url 'tickets:login' %}">登入</button>                                              {% endcomment %}
+                  </div>
+                </div>            
+                <style>
+                  .navbar .dropdown-item:hover{
+                      background-color:#007bff;
+                      cokor:white;
+                  }
+                </style>
+          </div>
+        </div>
+    </div>     
+</body>
+</html>
+
