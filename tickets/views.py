@@ -2,33 +2,28 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponse
 from django.utils import timezone
-from django.db import transaction
+from django.utils.timezone import localtime
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
-from django.contrib.auth.models import User 
-from django.contrib.auth import authenticate,login,logout
-from datetime import timedelta
-from .models import Seat, SeatReservation, Showtime
-import json
-from datetime import datetime
-from django.utils.timezone import localtime
-from .models import Movie, Showtime, Seat,  SeatReservation,Order, Seat, Showtime ,Theater,Members
-# Order, OrderSeat,
-# from .forms import OrderForm
-from django.shortcuts import render, redirect
-from .forms import RegisterForm,SetPasswordForm
-from django.contrib import messages
-import random 
-import requests,sqlite3
-from bs4 import BeautifulSoup
-import importlib.util
-import os
-from django.utils.html import strip_tags
-from django.core.mail import EmailMultiAlternatives
-from django.contrib.auth.models import User
 from django.utils.encoding import smart_str
+from django.utils.html import strip_tags
+from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+
+from datetime import timedelta, datetime
+import random
+import json
+import requests
+import os
+from bs4 import BeautifulSoup
+
+from .models import (
+    Movie, Showtime, Seat, SeatReservation, Order, Theater, Members
+)
+from .forms import RegisterForm, SetPasswordForm
 """""
 def sendEmail(request, username):
     try:
